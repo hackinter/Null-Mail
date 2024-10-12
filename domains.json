@@ -1,0 +1,25 @@
+{
+  "domains": [
+    {"name": "tempmail.com"},
+    {"name": "mailinator.com"},
+    {"name": "dispostable.com"},
+    {"name": "10minutemail.com"},
+    {"name": "getnada.com"},
+    {"name": "guerrillamail.com"},
+    {"name": "temp-mail.org"},
+    {"name": "yopmail.com"},
+    {"name": "maildrop.cc"},
+    {"name": "fakeinbox.com"},
+    {"name": "mytrashmail.com"},
+    {"name": "tempinbox.com"},
+    {"name": "mailcatch.com"},
+    {"name": "airmail.cc"},
+    {"name": "spambox.us"},
+    {"name": "trashmail.com"},
+    {"name": "discard.email"},
+    {"name": "throwawaymail.com"},
+    {"name": "mailinator.net"},
+    {"name": "inboxbear.com"},
+    {"name": "protectedmail.com"}
+  ]
+}
