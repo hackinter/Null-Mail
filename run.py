@@ -5,6 +5,9 @@ import random
 # Initialize session
 rs = requests.Session()
 
+# To store the created emails
+created_emails = []
+
 def display_logo():
     logo = r"""
     _   ____  ____    __         ____  ____ _  __
@@ -16,13 +19,13 @@ def display_logo():
     print(logo)
 
 def display_divider():
-    print("/___/___/___/___/___/___/___/___/___/___/___/___/")
+    print("▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ▄ ")
 
 def display_info():
-    print("Welcome to NULL-MAIL!")
-    print("Created by: HACKINTER")
-    print("Version: 1.0")
-    print("Twitter: _anonix_z")
+    print("🌐 Welcome to NULL-MAIL!")
+    print("👤 Created by: HACKINTER")
+    print("🔖 Version: 1.0")
+    print("🐦 Twitter: _anonix_z")
     print("© 2024 HACKINTER. All rights reserved.\n")
 
 def create_custom_email(email_name):
@@ -31,7 +34,7 @@ def create_custom_email(email_name):
     domain_list = [domain['name'] for domain in domains]
 
     # Display available domains and get user selection
-    print("Available domains:")
+    print("🌐 Available domains:")  # Updated emoji here
     for i, domain in enumerate(domain_list, start=1):
         print(f"{i}. {domain}")
 
@@ -45,10 +48,10 @@ def create_custom_email(email_name):
             if 0 <= selected_index < len(domain_list):
                 selected_domain = domain_list[selected_index]
             else:
-                print("Invalid selection, using a random domain instead.")
+                print("❌ Invalid selection, using a random domain instead.")
                 selected_domain = random.choice(domain_list)
         except ValueError:
-            print("Invalid input, using a random domain instead.")
+            print("❌ Invalid input, using a random domain instead.")
             selected_domain = random.choice(domain_list)
 
     email = f"{email_name}@{selected_domain}"
@@ -58,11 +61,12 @@ def create_custom_email(email_name):
     )
 
     if response.status_code == 200:
-        print(f"Successfully created email: {email}")
+        print(f"✅ Successfully created email: {email}")
+        created_emails.append(email)  # Store the created email
         save_email_info(email)
         check_inbox(email)
     else:
-        print("Error: Failed to create email. Try again.")
+        print("❌ Error: Failed to create email. Try again.")
 
 def save_email_info(email):
     with open("domain.txt", "w") as file:
@@ -76,19 +80,19 @@ def check_inbox(email):
     if response.status_code == 200:
         messages = response.json()
         if messages:
-            print(f"\nYou have {len(messages)} new message(s) in your inbox:\n")
+            print(f"\n📥 You have {len(messages)} new message(s) in your inbox:\n")
             for msg in messages:
                 display_message(msg)
         else:
-            print("No new messages in the inbox.")
+            print("📭 No new messages in the inbox.")
     else:
-        print("Error checking inbox. Please try again later.")
+        print("❌ Error checking inbox. Please try again later.")
 
 def display_message(msg):
-    print(f"New Message:")
-    print(f"From: {msg['from']}")
-    print(f"Subject: {msg['subject']}")
-    print(f"Message:\n{msg['body_text']}")
+    print(f"🆕 New Message:")
+    print(f"📧 From: {msg['from']}")
+    print(f"📝 Subject: {msg['subject']}")
+    print(f"📜 Message:\n{msg['body_text']}")
 
 def generate_random_email():
     length = random.randint(10, 15)
@@ -99,11 +103,21 @@ def generate_random_email():
     if response.status_code == 200:
         data = response.json()
         email = data["email"]
-        print(f"Random email created: {email}")
+        print(f"🎉 Random email created: {email}")
+        created_emails.append(email)  # Store the created email
         save_email_info(email)
         check_inbox(email)
     else:
-        print("Error: Failed to create random email.")
+        print("❌ Error: Failed to create random email.")
+
+def display_total_emails_created():
+    """Display all created emails."""
+    if created_emails:
+        print("\n📊 Total emails created:")
+        for email in created_emails:
+            print(email)
+    else:
+        print("📭 No emails have been created yet.")
 
 def main():
     display_logo()
@@ -111,21 +125,30 @@ def main():
     display_divider()  # Display the divider after the info
 
     while True:
-        choice = input("Do you want to create a custom email (C), generate a random email (R), or check inbox (I)? Type 'exit' to quit: ").strip().lower()
+        choice = input(
+            "❓ Do you want to:\n"
+            "[C] Create a custom email\n"
+            "[R] Generate a random email\n"
+            "[I] Check inbox\n"
+            "[T] Display total emails created\n"
+            "Type 'exit' to quit: "
+        ).strip().lower()
 
         if choice == 'c':
-            email_name = input("Enter your custom email name: ")
+            email_name = input("🖊️ Enter your custom email name: ")
             create_custom_email(email_name)
         elif choice == 'r':
             generate_random_email()
         elif choice == 'i':
-            email = input("Enter your email address to check the inbox: ")
+            email = input("📧 Enter your email address to check the inbox: ")
             check_inbox(email)
+        elif choice == 't':
+            display_total_emails_created()  # Call the function to display total emails
         elif choice == 'exit':
-            print("Exiting the program. Goodbye!")
+            print("👋 Exiting the program. Goodbye!")
             break
         else:
-            print("Invalid choice. Please try again.")
+            print("❌ Invalid choice. Please try again.")
 
 if __name__ == "__main__":
     main()
