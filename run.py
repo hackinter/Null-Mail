@@ -25,24 +25,18 @@ def display_info():
     print("Twitter: _anonix_z")
     print("© 2024 HACKINTER. All rights reserved.\n")
 
-def fetch_domains():
-    """Fetch available domains from the API."""
-    response = rs.get("https://api.internal.temp-mail.io/api/v3/domains")
-    if response.status_code == 200:
-        return [domain['name'] for domain in response.json()["domains"]]
-    else:
-        print("Error fetching domains.")
-        return []
-
 def create_custom_email(email_name):
-    """Create a custom email with the selected domain."""
-    domain_list = fetch_domains()
+    # Fetch available domains
+    domains = json.loads(rs.get("https://api.internal.temp-mail.io/api/v3/domains").text)["domains"]
+    domain_list = [domain['name'] for domain in domains]
+
+    # Display available domains and get user selection
     print("Available domains:")
     for i, domain in enumerate(domain_list, start=1):
         print(f"{i}. {domain}")
 
     domain_selection = input("Select a domain by number (or enter 'random' for a random domain): ")
-    
+
     if domain_selection.lower() == 'random':
         selected_domain = random.choice(domain_list)
     else:
@@ -58,21 +52,23 @@ def create_custom_email(email_name):
             selected_domain = random.choice(domain_list)
 
     email = f"{email_name}@{selected_domain}"
-    response = rs.post("https://api.internal.temp-mail.io/api/v3/email/new", json={"name": email_name, "domain": selected_domain})
+    response = rs.post(
+        "https://api.internal.temp-mail.io/api/v3/email/new",
+        json={"name": email_name, "domain": selected_domain}
+    )
 
     if response.status_code == 200:
         print(f"Successfully created email: {email}")
         save_email_info(email)
-        inbox_check(email)
+        check_inbox(email)
     else:
         print("Error: Failed to create email. Try again.")
 
 def save_email_info(email):
-    """Save the created email to a file."""
     with open("domain.txt", "w") as file:
         file.write(email)
 
-def inbox_check(email):
+def check_inbox(email):
     """Check the inbox for new messages."""
     inbox_url = f"https://api.internal.temp-mail.io/api/v3/email/{email}/messages"
     response = rs.get(inbox_url)
@@ -80,48 +76,56 @@ def inbox_check(email):
     if response.status_code == 200:
         messages = response.json()
         if messages:
+            print(f"\nYou have {len(messages)} new message(s) in your inbox:\n")
             for msg in messages:
                 display_message(msg)
         else:
             print("No new messages in the inbox.")
     else:
-        print("Error checking inbox.")
+        print("Error checking inbox. Please try again later.")
 
 def display_message(msg):
-    """Display the details of a message."""
-    print(f"\nNew Message:")
+    print(f"New Message:")
     print(f"From: {msg['from']}")
     print(f"Subject: {msg['subject']}")
     print(f"Message:\n{msg['body_text']}")
 
 def generate_random_email():
-    """Generate a random email address."""
     length = random.randint(10, 15)
-    response = rs.post("https://api.internal.temp-mail.io/api/v3/email/new", json={"min_name_length": length, "max_name_length": length})
-    
+    response = rs.post(
+        "https://api.internal.temp-mail.io/api/v3/email/new",
+        json={"min_name_length": length, "max_name_length": length}
+    )
     if response.status_code == 200:
         data = response.json()
         email = data["email"]
         print(f"Random email created: {email}")
         save_email_info(email)
-        inbox_check(email)
+        check_inbox(email)
     else:
         print("Error: Failed to create random email.")
 
 def main():
     display_logo()
-    display_info()
-    display_divider()
-    
-    choice = input("Do you want to create a custom email (C) or generate a random email (R)? ").strip().lower()
+    display_info()  # Display additional information
+    display_divider()  # Display the divider after the info
 
-    if choice == 'c':
-        email_name = input("Enter your custom email name: ")
-        create_custom_email(email_name)
-    elif choice == 'r':
-        generate_random_email()
-    else:
-        print("Invalid choice, exiting.")
+    while True:
+        choice = input("Do you want to create a custom email (C), generate a random email (R), or check inbox (I)? Type 'exit' to quit: ").strip().lower()
+
+        if choice == 'c':
+            email_name = input("Enter your custom email name: ")
+            create_custom_email(email_name)
+        elif choice == 'r':
+            generate_random_email()
+        elif choice == 'i':
+            email = input("Enter your email address to check the inbox: ")
+            check_inbox(email)
+        elif choice == 'exit':
+            print("Exiting the program. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
     main()
