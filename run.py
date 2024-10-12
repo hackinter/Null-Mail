@@ -126,12 +126,12 @@ def main():
 
     while True:
         choice = input(
-            "❓ Do you want to:\n"
             "[C] Create a custom email\n"
             "[R] Generate a random email\n"
             "[I] Check inbox\n"
             "[T] Display total emails created\n"
-            "Type 'exit' to quit: "
+            "[exit] Type to quit\n"
+            "Type what you want to do: "
         ).strip().lower()
 
         if choice == 'c':
