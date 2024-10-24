@@ -23,7 +23,7 @@ def display_divider():
 
 def display_info():
     print("🌐 Welcome to NULL-MAIL!")
-    print("👤 Created by: HACKINTER")
+    print("👨‍💻 Created by: HACKINTER")
     print("🔖 Version: 1.0")
     print("🐦 Twitter: _anonix_z")
     print("© 2024 HACKINTER. All rights reserved.\n")
@@ -38,7 +38,7 @@ def create_custom_email(email_name):
     for i, domain in enumerate(domain_list, start=1):
         print(f"{i}. {domain}")
 
-    domain_selection = input("Select a domain by number (or enter 'random' for a random domain): ")
+    domain_selection = input("Select a domain by number (or enter 'R' for a random domain): ")
 
     if domain_selection.lower() == 'random':
         selected_domain = random.choice(domain_list)
