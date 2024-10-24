@@ -1,4 +1,3 @@
-```markdown
 # NULL-MAIL
 
 NULL-MAIL is a temporary email creation tool that provides users with a safe and anonymous way to communicate. With this tool, users can easily create a new temporary email address and check messages sent to that address.
